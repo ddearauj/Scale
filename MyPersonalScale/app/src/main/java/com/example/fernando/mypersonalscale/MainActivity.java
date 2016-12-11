@@ -108,7 +108,45 @@ public class MainActivity extends AppCompatActivity {
         }
         return connected;
     }
+    
+    void beginListenForData()
+    {
+        final Handler handler = new Handler();
+        stopThread = false;
+        buffer = new byte[1024];
+        Thread thread  = new Thread(new Runnable()
+        {
+            public void run()
+            {
+                while(!Thread.currentThread().isInterrupted() && !stopThread)
+                {
+                    try
+                    {
+                        int byteCount = inputStream.available();
+                        if(byteCount > 0)
+                        {
+                            byte[] rawBytes = new byte[byteCount];
+                            inputStream.read(rawBytes);
+                           final String string=new String(rawBytes,"UTF-8");
+                            handler.post(new Runnable() {
+                                        public void run()
+                                        {
+                                            textView.append(string);
+                                        }
+                                    });
 
+                        }
+                    }
+                    catch (IOException ex)
+                    {
+                        stopThread = true;
+                    }
+                }
+            }
+        });
+
+        thread.start();
+    }
 
     
     public void onClickStart(View view) {
@@ -118,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 Toast.makeText(this, "Meu Deus", Toast.LENGTH_SHORT).show();
                 deviceConnected=true;
-                //beginListenForData();
+                beginListenForData();
             }
         }
     }
