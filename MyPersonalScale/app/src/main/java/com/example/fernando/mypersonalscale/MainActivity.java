@@ -120,8 +120,6 @@ public class MainActivity extends AppCompatActivity {
                 deviceConnected=true;
                 //beginListenForData();
             }
-
         }
     }
-
 }
