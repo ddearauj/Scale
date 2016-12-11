@@ -16,15 +16,13 @@ import android.os.Handler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.Socket;
 import java.util.Set;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
-	WifiManager manager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-	WifiInfo info = manager.getConnectionInfo();
-	String address = info.getMacAddress();
-	private final String DEVICE_ADDRESS= address;
+	private final String DEVICE_NAME="BT-820";
     private final UUID PORT_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");//Serial Port Service ID
     private BluetoothDevice device;
     private BluetoothSocket socket;
@@ -70,10 +68,9 @@ public class MainActivity extends AppCompatActivity {
 	        }
 	        else
 	        {
-                Toast.makeText(this, "BTinit", Toast.LENGTH_SHORT).show();
 	            for (BluetoothDevice iterator : bondedDevices)
 	            {
-	                if(iterator.getAddress().equals(DEVICE_ADDRESS))
+                    if(iterator.getName().equals(DEVICE_NAME))
 	                {
 	                    device=iterator;
 	                    found=true;
@@ -88,11 +85,12 @@ public class MainActivity extends AppCompatActivity {
     {
         boolean connected=true;
         try {
-            socket = device.createRfcommSocketToServiceRecord(PORT_UUID);
+            socket = (BluetoothSocket) device.getClass().getMethod("createRfcommSocket",new Class[] {int.class}).invoke(device,1);
             socket.connect();
-        } catch (IOException e) {
+            Toast.makeText(this, "Bla", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
             e.printStackTrace();
-            connected=false;
+            connected = false;
         }
         if(connected)
         {
@@ -118,10 +116,9 @@ public class MainActivity extends AppCompatActivity {
         {
             if(BTconnect())
             {
+                Toast.makeText(this, "Meu Deus", Toast.LENGTH_SHORT).show();
                 deviceConnected=true;
                 //beginListenForData();
-                textView.append("\nConnection Opened!\n");
-
             }
 
         }
