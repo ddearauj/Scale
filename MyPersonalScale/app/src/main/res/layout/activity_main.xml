@@ -10,20 +10,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.fernando.mypersonalscale.MainActivity">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        android:ems="10"
-        android:id="@+id/editText"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="206dp"
-        android:layout_centerVertical="true"
-        android:autoText="false"
-        android:editable="false"
-        android:enabled="false" />
-
     <ToggleButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,12 +20,21 @@
         android:layout_above="@+id/button"
         android:layout_centerHorizontal="true" />
 
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/textView" />
+
     <Button
         android:text="@string/tara"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="47dp"
+        android:layout_marginBottom="74dp"
         android:id="@+id/button"
-        android:layout_alignParentBottom="true"
+        android:onClick="onClickStart"
+        android:layout_above="@+id/textView"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>

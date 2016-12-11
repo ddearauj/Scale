@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        TextView textview = (TextView) findViewById(R.id.textView);
     }
 
 	public boolean BTinit()
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
 	        }
 	        else
 	        {
+                Toast.makeText(this, "BTinit", Toast.LENGTH_SHORT).show();
 	            for (BluetoothDevice iterator : bondedDevices)
 	            {
 	                if(iterator.getAddress().equals(DEVICE_ADDRESS))
@@ -113,10 +115,10 @@ public class MainActivity extends AppCompatActivity {
         {
             if(BTconnect())
             {
-                setUiEnabled(true);
                 deviceConnected=true;
-                beginListenForData();
+                //beginListenForData();
                 textView.append("\nConnection Opened!\n");
+
             }
 
         }
