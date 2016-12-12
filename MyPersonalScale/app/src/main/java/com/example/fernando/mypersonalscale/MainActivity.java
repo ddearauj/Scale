@@ -376,6 +376,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .setName(SAMPLE_SESSION_NAME)
                 .setDescription("New weight measure")
                 .setIdentifier("UniqueIdentifierHere")
+                .setStartTime(startTime, TimeUnit.MILLISECONDS)
+                .setEndTime(endTime, TimeUnit.MILLISECONDS)
                 .build();
 
         // Build a session insert request
