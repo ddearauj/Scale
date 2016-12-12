@@ -82,6 +82,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         textView = (TextView) findViewById(R.id.textView);
         connectButton = (Button) findViewById(R.id.connectButton);
 
+        buildClient();
+
         initializeLogging();
         if (!checkPermissions()) {
             requestPermissions();
@@ -377,7 +379,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .setDescription("New weight measure")
                 .setIdentifier("UniqueIdentifierHere")
                 .setStartTime(startTime, TimeUnit.MILLISECONDS)
-                .setEndTime(endTime, TimeUnit.MILLISECONDS)
+                .setEndTime(startWeightTime, TimeUnit.MILLISECONDS)
                 .build();
 
         // Build a session insert request
