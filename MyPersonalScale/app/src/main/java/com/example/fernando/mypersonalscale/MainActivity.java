@@ -122,7 +122,45 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         )
                 .addOnConnectionFailedListener(this)
                 .build();
-        mClient.connect();
+    }
+
+    /**
+     *  Create and execute a {@link SessionInsertRequest} to insert a session into the History API,
+     *  and then create and execute a {@link SessionReadRequest} to verify the insertion succeeded.
+     *  By using an AsyncTask to make our calls, we can schedule synchronous calls, so that we can
+     *  query for sessions after confirming that our insert was successful. Using asynchronous calls
+     *  and callbacks would not guarantee that the insertion had concluded before the read request
+     *  was made. An example of an asynchronous call using a callback can be found in the example
+     *  on deleting sessions below.
+     */
+    private class InsertAndVerifySessionTask extends AsyncTask<Void, Void, Void> {
+        protected Void doInBackground(Void... params) {
+            //First, create a new session and an insertion request.
+            SessionInsertRequest insertRequest = insertFitnessSession();
+
+            // [START insert_session]
+            // Then, invoke the Sessions API to insert the session and await the result,
+            // which is possible here because of the AsyncTask. Always include a timeout when
+            // calling await() to avoid hanging that can occur from the service being shutdown
+            // because of low memory or other conditions.
+            Log.i(TAG, "Inserting the session in the History API");
+            com.google.android.gms.common.api.Status insertStatus =
+                    Fitness.SessionsApi.insertSession(mClient, insertRequest)
+                            .await(1, TimeUnit.MINUTES);
+
+            // Before querying the session, check to see if the insertion succeeded.
+            if (!insertStatus.isSuccess()) {
+                Log.i(TAG, "There was a problem inserting the session: " +
+                        insertStatus.getStatusMessage());
+                return null;
+            }
+
+            // At this point, the session has been inserted and can be read.
+            Log.i(TAG, "Session insert was successful!");
+            // [END insert_session]
+
+            return null;
+        }
     }
 
 
@@ -282,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private DataSet createDataForRequest(DataType dataType, int dataSourceType, Object values,
                                          long startTime, long endTime, TimeUnit timeUnit) {
         DataSource dataSource = new DataSource.Builder()
-                .setAppPackageName("MyPersonalScale")
+                .setAppPackageName(this.getPackageName())
                 .setDataType(dataType)
                 .setType(dataSourceType)
                 .build();
@@ -301,6 +339,33 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         return dataSet;
     }
 
+    private SessionInsertRequest insertFitnessSession() {
+        Log.i(TAG, "Creating a new session for an afternoon run");
+        // Setting start and end times for our run.
+        Calendar cal = Calendar.getInstance();
+        Date now = new Date();
+        cal.setTime(now);
+
+        // Create a data source
+        DataSet dataSet = createDataForRequest(DataType.TYPE_WEIGHT,0,weight,now.toMillis(true),now.toMillis(true),TimeUnit.MILLISECONDS);
+
+        // [START build_insert_session_request]
+        // Create a session with metadata about the activity.
+        Session session = new Session.Builder()
+                .setName(SAMPLE_SESSION_NAME)
+                .setDescription("New weight measure")
+                .setIdentifier("UniqueIdentifierHere")
+                .build();
+
+        // Build a session insert request
+        SessionInsertRequest insertRequest = new SessionInsertRequest.Builder()
+                .setSession(session)
+                .addDataSet(dataSet)
+                .build();
+        // [END build_insert_session_request]
+
+        return insertRequest;
+    }
 
 
     public void onClickSend (View view){
