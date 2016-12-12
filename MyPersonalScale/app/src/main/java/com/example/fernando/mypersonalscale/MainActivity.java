@@ -82,6 +82,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         textView = (TextView) findViewById(R.id.textView);
         connectButton = (Button) findViewById(R.id.connectButton);
 
+        buildClient();
+
         initializeLogging();
         if (!checkPermissions()) {
             requestPermissions();
@@ -123,10 +125,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                             public void onConnectionSuspended(int i) {
                                 // If your connection to the sensor gets lost at some point,
                                 // you'll be able to determine the reason and react to it here.
-                                if (i == ConnectionCallbacks.CAUSE_NETWORK_LOST) {
+                                if (i == GoogleApiClient.ConnectionCallbacks.CAUSE_NETWORK_LOST) {
                                     Log.i(TAG, "Connection lost.  Cause: Network Lost.");
                                 } else if (i
-                                        == ConnectionCallbacks.CAUSE_SERVICE_DISCONNECTED) {
+                                        == GoogleApiClient.ConnectionCallbacks.CAUSE_SERVICE_DISCONNECTED) {
                                     Log.i(TAG,
                                             "Connection lost.  Reason: Service Disconnected");
                                 }
@@ -141,6 +143,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         }
                 })
                 .build();
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 
     /**
@@ -379,7 +396,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .setDescription("New weight measure")
                 .setIdentifier("UniqueIdentifierHere")
                 .setStartTime(startTime, TimeUnit.MILLISECONDS)
-                .setEndTime(endTime, TimeUnit.MILLISECONDS)
+                .setEndTime(startWeightTime, TimeUnit.MILLISECONDS)
                 .build();
 
         // Build a session insert request
