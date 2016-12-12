@@ -3,4 +3,6 @@
     <string name="connect">Conectar</string>
     <string name="modonormal">Modo Normal</string>
     <string name="modocaminha">Modo Caminhada</string>
+    <string name="tara">Tara</string>
+    <string name="Enviar">Enviar Dados</string>
 </resources>

@@ -14,10 +14,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="27dp"
-        android:id="@+id/toggleButton"
+        android:id="@+id/modeButton"
         android:textOff="@string/modonormal"
         android:textOn="@string/modocaminha"
-        android:layout_above="@+id/button"
+        android:layout_above="@+id/connectButton"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -33,8 +33,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="74dp"
-        android:id="@+id/button"
-        android:onClick="onClickStart"
+        android:id="@+id/connectButton"
+        android:onClick="onClickConnect"
         android:layout_above="@+id/textView"
         android:layout_centerHorizontal="true" />
+
+    <Button
+        android:text="@string/tara"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"
+        android:id="@+id/zeroButton" />
+
+    <Button
+        android:text="@string/Enviar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/sendButton"
+        android:layout_marginBottom="35dp"
+        android:onClick="onClickSend"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@+id/modeButton"
+        android:layout_alignStart="@+id/modeButton" />
 </RelativeLayout>
