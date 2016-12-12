@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     }
 
-    
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -97,6 +97,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         // them, the app will start working.
         buildFitnessClient();
     }
+
+    @Override
+	public void onDestroy() {
+    	super.onDestroy();
+    	mGoogleClient.stopAutoManage(getActivity());
+    	mGoogleClient.disconnect();
+	}
 
 
     void buildClient() {
