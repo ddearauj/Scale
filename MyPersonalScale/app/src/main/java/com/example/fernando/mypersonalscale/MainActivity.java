@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                             @Override
                             public void onConnected(@Nullable Bundle bundle) {
                                 Log.i(TAG, "Connected!!!");
-                                new InsertAndVerifySessionTask().execute();
+                                // colocar variavel para clicar só quando passar aqui!
                             }
 
                             @Override
@@ -347,9 +347,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Calendar cal = Calendar.getInstance();
         Date now = new Date();
         cal.setTime(now);
+        long startWeightTime = cal.getTimeInMillis();
+        cal.add(Calendar.MINUTE, -10);
+        long startTime = cal.getTimeInMillis();
+
 
         // Create a data source
-        DataSet dataSet = createDataForRequest(DataType.TYPE_WEIGHT,0,weight,now.toMillis(true),now.toMillis(true),TimeUnit.MILLISECONDS);
+        DataSet dataSet = createDataForRequest(DataType.TYPE_WEIGHT,0,weight,startTime, startWeightTime ,TimeUnit.MILLISECONDS);
 
         // [START build_insert_session_request]
         // Create a session with metadata about the activity.
@@ -371,10 +375,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 
     public void onClickSend (View view){
-        Time now = new Time(Time.getCurrentTimezone());
-        now.setToNow();
-        DataSet dataSet = createDataForRequest(DataType.TYPE_WEIGHT,0,weight,now.toMillis(true),now.toMillis(true),TimeUnit.MILLISECONDS);
-        Fitness.HistoryApi.insertData(mClient,dataSet).await(1, TimeUnit.MINUTES);
+        new InsertAndVerifySessionTask().execute();
     }
 
 }
