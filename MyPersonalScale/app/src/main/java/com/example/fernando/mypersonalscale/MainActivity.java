@@ -88,6 +88,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     }
 
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // This ensures that if the user denies the permissions then uses Settings to re-enable
+        // them, the app will start working.
+        buildFitnessClient();
+    }
+
 
     void buildClient() {
         mClient = new GoogleApiClient.Builder(this)
