@@ -47,9 +47,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private static boolean connected = false;
     private GoogleApiClient mGoogleApiClient;
     TextView textView;
+    TextView weightView;
     Button connectButton;
     private static float weight = 98;
-    private final String DEVICE_NAME = "BT-820";
+    private final String DEVICE_NAME = "HC-05";
     private BluetoothDevice device;
     private BluetoothSocket socket;
     private OutputStream outputStream;
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         textView = (TextView) findViewById(R.id.textView);
+        weightView = (TextView) findViewById(R.id.weightView);
         textView.setText("Login to continue");
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         connectButton = (Button) findViewById(R.id.connectButton);
@@ -352,7 +354,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                             final String string = new String(rawBytes, "UTF-8");
                             handler.post(new Runnable() {
                                 public void run() {
-                                    textView.setText(string);
+                                    weightView.setText(string);
                                     ;
                                 }
                             });

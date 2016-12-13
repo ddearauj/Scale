@@ -37,6 +37,24 @@
         android:layout_marginStart="26dp"
         android:layout_marginTop="74dp" />
 
+    <Button
+        android:text="@string/tara"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/sendWeight"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="23dp"
+        android:id="@+id/buttonSetZero" />
+
+    <TextView
+        android:text="Peso"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/weightView"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
+
     <TextView
         android:text="TextView"
         android:layout_width="wrap_content"

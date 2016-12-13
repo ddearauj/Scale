@@ -2,4 +2,5 @@
     <string name="app_name">Scale</string>
     <string name="signed_in_fmt">Signed in as: %s</string>
     <string name="Fit">Enviar para Fit</string>
+    <string name="tara">Tara</string>
 </resources>
