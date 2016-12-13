@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "823859055482",
+    "project_id": "firebase-balanca"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:823859055482:android:a87b9658b2f532f8",
+        "android_client_info": {
+          "package_name": "com.example.dpereira14.scale"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "823859055482-ppo9pas44lit7q30t1q1e2gc2lckn8fp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dpereira14.scale",
+            "certificate_hash": "B2042F80194BE7F818A8396D767B9EC9FB2E5AA3"
+          }
+        },
+        {
+          "client_id": "823859055482-7stj5i9ovon9992n47mlbidgp0mn3i4m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASrTk-PnuZszHfUMr5xq0oBP5ctQ1Wg1E"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
