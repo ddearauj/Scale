@@ -1,6 +1,7 @@
 package com.example.dpereira14.scale;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,6 +22,8 @@ import com.google.android.gms.fitness.data.DataPoint;
 import com.google.android.gms.fitness.data.DataSet;
 import com.google.android.gms.fitness.data.DataSource;
 import com.google.android.gms.fitness.data.DataType;
+import com.google.android.gms.fitness.data.Field;
+import com.google.android.gms.fitness.request.DataUpdateRequest;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -34,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private static boolean connected = false;
     private GoogleApiClient mGoogleApiClient;
     TextView textView;
-    private static int weight = 90;
+    private static float weight = 50;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +50,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
-                .requestScopes(new Scope(Scopes.FITNESS_ACTIVITY_READ_WRITE), new Scope(Scopes.FITNESS_LOCATION_READ))
+                .requestScopes(new Scope(Scopes.FITNESS_BODY_READ_WRITE))
                 .build();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* MainActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .addApi(Fitness.HISTORY_API)
-                .addScope(new Scope(Scopes.FITNESS_ACTIVITY_READ_WRITE))
+                .addScope(new Scope(Scopes.FITNESS_BODY_READ_WRITE))
                 .addConnectionCallbacks(
                         new GoogleApiClient.ConnectionCallbacks() {
                             @Override
@@ -127,13 +130,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private DataSet createWeightDataForRequest(DataType dataType, int dataSourceType, Object values,
                                          long startTime, long endTime, TimeUnit timeUnit) {
         DataSource dataSource = new DataSource.Builder()
-                .setAppPackageName("MyPersonalScale")
+                .setAppPackageName("com.example.dpereira14.scale")
                 .setDataType(dataType)
                 .setType(dataSourceType)
                 .build();
 
         DataSet dataSet = DataSet.create(dataSource);
-        DataPoint dataPoint = dataSet.createDataPoint().setTimeInterval(startTime, endTime, timeUnit);
+        DataPoint dataPoint = dataSet.createDataPoint().setTimeInterval(startTime, endTime, timeUnit.MILLISECONDS);
 
         if (values instanceof Integer) {
             dataPoint = dataPoint.setIntValues((Integer) values);
@@ -148,13 +151,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     private DataSet insertWeight() {
         Log.i(TAG, "Creating a new data insert request.");
-
-
         // set insertion time
         Calendar cal = Calendar.getInstance();
         Date now = new Date();
         cal.setTime(now);
+        cal.add(Calendar.MILLISECOND, 0);
         long endTime = cal.getTimeInMillis();
+        cal.add(Calendar.MILLISECOND, 0);
         long startTime = cal.getTimeInMillis();
 
         // Create a data set
@@ -162,5 +165,97 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         return dataSet;
     }
 
+    private class InsertAndVerifyWeight extends AsyncTask<Void, Void, Void> {
+        protected Void doInBackground(Void... params) {
+            DataSet dataSet = insertWeight();
+
+            Log.i(TAG, "Inserting the dataset in the History API.");
+            com.google.android.gms.common.api.Status insertStatus =
+                    Fitness.HistoryApi.insertData(mGoogleApiClient, dataSet).await(1, TimeUnit.MINUTES);
+
+
+            if (!insertStatus.isSuccess()) {
+                Log.i(TAG, "There was a problem inserting the dataset.");
+                String msg = insertStatus.toString(); // vem vazio!!
+                Log.i(TAG, msg);
+                return null;
+            }
+
+            Log.i(TAG, "Data insert was successful!");
+            return null;
+        }
+    }
+
+    public class UpdateAndVerifyWeight extends AsyncTask<Void, Void, Void> {
+        protected Void doInBackground(Void... params) {
+            // Create a new dataset and update request.
+            DataSet dataSet = updateFitnessData();
+            long startTime = 0;
+            long endTime = 0;
+
+            // Get the start and end times from the dataset.
+            for (DataPoint dataPoint : dataSet.getDataPoints()) {
+                startTime = dataPoint.getStartTime(TimeUnit.MILLISECONDS);
+                endTime = dataPoint.getEndTime(TimeUnit.MILLISECONDS);
+            }
+
+            Log.i(TAG, "Updating the dataset in the History API.");
+
+
+            DataUpdateRequest request = new DataUpdateRequest.Builder()
+                    .setDataSet(dataSet)
+                    .setTimeInterval(startTime, endTime, TimeUnit.MILLISECONDS)
+                    .build();
+
+            com.google.android.gms.common.api.Status updateStatus =
+                    Fitness.HistoryApi.updateData(mGoogleApiClient, request)
+                            .await(1, TimeUnit.MINUTES);
+
+            if (!updateStatus.isSuccess()) {
+                Log.i(TAG, "There was a problem updating the dataset.");
+                return null;
+            }
+            Log.i(TAG, "Data update was successful.");
+
+            return null;
+        }
+    }
+
+
+        private DataSet updateFitnessData() {
+            Log.i(TAG, "Creating a new data update request.");
+            Calendar cal = Calendar.getInstance();
+            Date now = new Date();
+            cal.setTime(now);
+            cal.add(Calendar.MINUTE, 0);
+            long endTime = cal.getTimeInMillis();
+            cal.add(Calendar.MINUTE, -50);
+            long startTime = cal.getTimeInMillis();
+
+            // Create a data source
+            DataSource dataSource = new DataSource.Builder()
+                    .setAppPackageName("com.example.dpereira14.scale")
+                    .setDataType(DataType.TYPE_WEIGHT)
+                    .setType(DataSource.TYPE_RAW)
+                    .build();
+
+            // Create a data set
+            DataSet dataSet = DataSet.create(dataSource);
+            DataPoint dataPoint = dataSet.createDataPoint()
+                    .setTimeInterval(startTime, endTime, TimeUnit.MILLISECONDS);
+            dataPoint.getValue(Field.FIELD_WEIGHT).setFloat(weight);
+            dataSet.add(dataPoint);
+
+            return dataSet;
+        }
+
+    public void onClickSendWeight(View view) {
+        if (connected) {
+            new UpdateAndVerifyWeight().execute();
+        }
+        else {
+            textView.setText("Login to send weight");
+        }
+    }
 
 }
