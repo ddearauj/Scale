@@ -351,11 +351,22 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                         if (byteCount > 0) {
                             byte[] rawBytes = new byte[byteCount];
                             inputStream.read(rawBytes);
-                            final String string = new String(rawBytes, "UTF-8");
+                            String string = new String(rawBytes, "UTF-8");
+                            try {
+                                weight = Float.parseFloat(string);
+                                if (weight < 20) {
+                                    string = "0";
+                                }
+                            }
+                            catch (Exception e) {
+                                Log.i(TAG, "Not float");
+
+                            }
+                            final String str0 = string;
+
                             handler.post(new Runnable() {
                                 public void run() {
-                                    weightView.setText(string);
-                                    ;
+                                    weightView.setText(str0);
                                 }
                             });
 
