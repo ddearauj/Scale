@@ -10,27 +10,39 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.dpereira14.scale.MainActivity">
 
+    <Button
+        android:text="Conectar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/connectButton"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:text="@string/Fit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/sendWeight"
+        android:onClick="onClickSendWeight"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="62dp" />
+
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="74dp" />
 
     <TextView
         android:text="TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="97dp"
-        android:id="@+id/textView" />
-
-    <Button
-        android:text="Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/sign_in_button"
-        android:layout_alignEnd="@+id/sign_in_button"
-        android:layout_marginTop="27dp"
-        android:id="@+id/sendWeight"
-        android:onClick="onClickSendWeight" />
+        android:id="@+id/textView"
+        android:layout_alignBaseline="@+id/connectButton"
+        android:layout_alignBottom="@+id/connectButton"
+        android:layout_toStartOf="@+id/sendWeight" />
 </RelativeLayout>
